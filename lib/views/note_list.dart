@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_crud/models/notes_for_listing.dart';
+import 'package:flutter_crud/views/note_delete.dart';
 import 'package:flutter_crud/views/note_modify.dart';
 
-class NoteList extends StatelessWidget {
+class NoteList extends StatefulWidget {
+  @override
+  _NoteListState createState() => _NoteListState();
+}
+
+class _NoteListState extends State<NoteList> {
   final notes = [
     NotesForListing(
       noteID: '1',
@@ -44,22 +50,52 @@ class NoteList extends StatelessWidget {
       ),
       body: ListView.separated(
         itemBuilder: (_, index) {
-          return ListTile(
-            title: Text(
-              notes[index].noteTitle,
-              style: TextStyle(
-                color: Theme.of(context).primaryColor,
+          return Dismissible(
+            key: ValueKey(notes[index].noteID),
+            direction: DismissDirection.startToEnd,
+            onDismissed: (direction) {
+              setState(() {
+                notes.removeAt(index);
+              });
+            },
+            confirmDismiss: (direction) async {
+              final result = await showDialog(
+                context: context,
+                builder: (_) => NoteDelete(),
+              );
+              print(result);
+              return result;
+            },
+            background: Container(
+              color: Colors.red,
+              padding: EdgeInsets.only(
+                left: 16,
+              ),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Icon(
+                  Icons.delete,
+                  color: Colors.white,
+                ),
               ),
             ),
-            subtitle: Text(
-              'Updated on ${formatDateTime(notes[index].lastEditDateTime)}',
+            child: ListTile(
+              title: Text(
+                notes[index].noteTitle,
+                style: TextStyle(
+                  color: Theme.of(context).primaryColor,
+                ),
+              ),
+              subtitle: Text(
+                'Updated on ${formatDateTime(notes[index].lastEditDateTime)}',
+              ),
+              onTap: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (_) => NoteModify(
+                          noteID: notes[index].noteID,
+                        )));
+              },
             ),
-            onTap: () {
-              Navigator.of(context).push(MaterialPageRoute(
-                  builder: (_) => NoteModify(
-                        noteID: notes[index].noteID,
-                      )));
-            },
           );
         },
         separatorBuilder: (_, __) => Divider(
