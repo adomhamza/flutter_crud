@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_crud/models/notes_for_listing.dart';
+import 'package:flutter_crud/views/note_modify.dart';
 
 class NoteList extends StatelessWidget {
   final notes = [
@@ -35,7 +36,10 @@ class NoteList extends StatelessWidget {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          Navigator.of(context)
+              .push(MaterialPageRoute(builder: (_) => NoteModify()));
+        },
         child: Icon(Icons.add),
       ),
       body: ListView.separated(
@@ -48,8 +52,14 @@ class NoteList extends StatelessWidget {
               ),
             ),
             subtitle: Text(
-              'Updated on ${notes[index].lastEditDateTime} ${formatDateTime(notes[index].lastEditDateTime)}',
+              'Updated on ${formatDateTime(notes[index].lastEditDateTime)}',
             ),
+            onTap: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (_) => NoteModify(
+                        noteID: notes[index].noteID,
+                      )));
+            },
           );
         },
         separatorBuilder: (_, __) => Divider(
