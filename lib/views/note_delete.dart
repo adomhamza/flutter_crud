@@ -7,7 +7,9 @@ class NoteDelete extends StatelessWidget {
       title: Text(
         'Warning',
       ),
-      content: Text('Are you sure you want to delete this note?'),
+      content: Text(
+        'Are you sure you want to delete this note?',
+      ),
       actions: <Widget>[
         FlatButton(
           onPressed: () {
